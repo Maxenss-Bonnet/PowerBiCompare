@@ -1,0 +1,83 @@
+table Reseller
+	lineageTag: 4cb53e67-bf6c-4034-9bcf-0a11a4309ce4
+
+	column ResellerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: bd9e6af2-69c6-415f-ac96-4060cd8ea1ba
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Reseller ID'
+		dataType: string
+		lineageTag: b50ddf31-e387-42da-b802-9d9df52b83c5
+		summarizeBy: none
+		sourceColumn: Reseller ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Business Type'
+		dataType: string
+		lineageTag: d8a0ac53-5956-446d-b4a4-cf67668ecbb6
+		summarizeBy: none
+		sourceColumn: Business Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Reseller
+		dataType: string
+		lineageTag: 231cf038-dce2-441d-b936-e48a124a918b
+		summarizeBy: none
+		sourceColumn: Reseller
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 57872619-34a8-49cc-b18c-9dc76c0cbb69
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State-Province
+		dataType: string
+		lineageTag: 14d84b36-e5cb-4bfc-a592-caa906cfdade
+		summarizeBy: none
+		sourceColumn: State-Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country-Region
+		dataType: string
+		lineageTag: e9313b26-d492-4b75-aa2a-d14dd2efe238
+		summarizeBy: none
+		sourceColumn: Country-Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Postal Code'
+		dataType: string
+		lineageTag: a64fd3f8-b5a2-4666-95ff-9610b9b134b8
+		summarizeBy: none
+		sourceColumn: Postal Code
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Reseller-17fe8f01-6107-4e6b-aac3-2336ecdaff10 = m
+		mode: import
+		queryGroup: DIM
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    Reseller_Table = Source{[Item="Reseller",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Reseller_Table,{{"ResellerKey", Int64.Type}, {"Reseller ID", type text}, {"Business Type", type text}, {"Reseller", type text}, {"City", type text}, {"State-Province", type text}, {"Country-Region", type text}, {"Postal Code", type text}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

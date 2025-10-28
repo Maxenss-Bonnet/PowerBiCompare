@@ -1,0 +1,124 @@
+table Sales_light
+	lineageTag: 3be879e8-eff6-4a67-9ad2-526c5f329d8b
+
+	/// Mesure 'M_SUM Unit Price' formatée en euros.
+	measure 'M_SUM Unit Price' = SUM('Sales_light'[Unit Price])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: a0091306-83ab-4c8c-a90b-d9bd9c213cd5
+
+	/// Mesure 'M_AVG Unit Price' formatée en euros.
+	measure 'M_AVG Unit Price' = AVERAGE('Sales_light'[Unit Price])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: fd0a9629-e537-4417-ad8d-3df31b679aba
+
+	/// Mesure 'M_MIN Unit Price' formatée en euros.
+	measure 'M_MIN Unit Price' = MIN('Sales_light'[Unit Price])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: a86aff8d-4993-4e14-9e30-973169d9b9cb
+
+	/// Mesure 'M_MAX Unit Price' formatée en euros.
+	measure 'M_MAX Unit Price' = MAX('Sales_light'[Unit Price])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: f0844f87-4586-48f6-9d99-b459e634f05e
+
+	/// Mesure 'M_COUNT Unit Price' formatée en euros.
+	measure 'M_COUNT Unit Price' = COUNT('Sales_light'[Unit Price])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: 17c0995f-3820-4d72-ad70-37e2b7ee8739
+
+	/// Mesure 'M_SUM Sales Amount' formatée en euros.
+	measure 'M_SUM Sales Amount' = SUM('Sales_light'[Sales Amount])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: 85bf332a-d913-4ec0-8aab-507ff57f300d
+
+	/// Mesure 'M_AVG Sales Amount' formatée en euros.
+	measure 'M_AVG Sales Amount' = AVERAGE('Sales_light'[Sales Amount])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: 07146773-b1d9-4a51-a135-5603743965b6
+
+	/// Mesure 'M_MIN Sales Amount' formatée en euros.
+	measure 'M_MIN Sales Amount' = MIN('Sales_light'[Sales Amount])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: be364e38-c5a9-47e5-9891-30d781dc2467
+
+	/// Mesure 'M_MAX Sales Amount' formatée en euros.
+	measure 'M_MAX Sales Amount' = MAX('Sales_light'[Sales Amount])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: 78095ad1-fcf9-4f57-9b7d-57506e98c686
+
+	/// Mesure 'M_COUNT Sales Amount' formatée en euros.
+	measure 'M_COUNT Sales Amount' = COUNT('Sales_light'[Sales Amount])
+		formatString: #,0.00 €
+		displayFolder: KPI\Revenus
+		lineageTag: 8e1ae868-d102-4331-a177-f22ea6bf9931
+
+	column SalesOrderLineKey
+		dataType: int64
+		formatString: 0
+		lineageTag: d6472cf2-03b9-4a41-97df-9b796a75e8c3
+		summarizeBy: count
+		sourceColumn: SalesOrderLineKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 28139cb1-393a-413b-aa6e-1ac2767d525d
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Unit Price'
+		dataType: double
+		lineageTag: e8c17a87-e220-4445-9238-7a4efea31610
+		summarizeBy: sum
+		sourceColumn: Unit Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Order Quantity'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6dc881a7-8430-4b2c-8cb7-f72712664d0d
+		summarizeBy: sum
+		sourceColumn: Order Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Amount'
+		dataType: double
+		lineageTag: e4149bc0-3612-4281-bca0-a42a4f6c5ad3
+		summarizeBy: sum
+		sourceColumn: Sales Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Sales_light = m
+		mode: import
+		queryGroup: FACT
+		source =
+				let
+				    Source = Sales,
+				    #"Autres colonnes supprimées" = Table.SelectColumns(Source,{"SalesOrderLineKey", "CustomerKey", "Unit Price", "Order Quantity", "Sales Amount"})
+				in
+				    #"Autres colonnes supprimées"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

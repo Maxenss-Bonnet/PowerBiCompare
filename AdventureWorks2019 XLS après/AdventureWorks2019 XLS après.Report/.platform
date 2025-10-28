@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "AdventureWorks2019 XLS après"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9433e551-0377-4477-8697-538fabe55bdf"
+  }
+}

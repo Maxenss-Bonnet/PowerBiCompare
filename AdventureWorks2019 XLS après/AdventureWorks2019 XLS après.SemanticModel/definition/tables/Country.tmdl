@@ -1,0 +1,19 @@
+table Country
+	lineageTag: 48a294fc-b181-4872-a648-e18fa174bc8f
+
+	column Country
+		dataType: string
+		lineageTag: 33cdebd3-4cd7-4aa2-aa5f-37feb678dac9
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Country = m
+		mode: import
+		source = "FR" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

@@ -1,0 +1,21 @@
+expression Source = "C:\Users\WJQN1684\OneDrive - orange.com\Documents\Power BI" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 4a350a43-fa8f-4a25-be23-c0622a716b0e
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression Country = "ES" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 7b6828bc-c192-4585-ba25-e885dafcfdcf
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression 'To delete' = "ES" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: f93391db-a41f-4465-a618-78859dc24ceb
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

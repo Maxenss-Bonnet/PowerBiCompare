@@ -1,0 +1,29 @@
+table Slicer_Month
+	lineageTag: c63623d7-ec74-441a-84a3-9b2a0292d5e8
+
+	column MonthStart
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 9b029938-98ff-472c-a780-ee8f29176ed4
+		summarizeBy: none
+		sourceColumn: MonthStart
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Slicer_Month = m
+		mode: import
+		queryGroup: DIM\Dates
+		source =
+				let
+				    Source = Date,
+				    #"Autres colonnes supprimées" = Table.SelectColumns(Source,{"MonthStart"}),
+				    #"Doublons supprimés" = Table.Distinct(#"Autres colonnes supprimées")
+				in
+				    #"Doublons supprimés"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

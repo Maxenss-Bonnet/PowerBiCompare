@@ -1,0 +1,61 @@
+table SalesTerritory
+	lineageTag: 790ca176-1bb7-46db-b274-3f772a59fe33
+
+	column SalesTerritoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 0dfd50f8-eb01-4993-b7b0-e7d3aa4f6ea0
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 09f540ca-ea5a-4d0e-a24c-99f4e7ea0992
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: bf1a6567-7a39-4038-b2c5-cb9514ce6cce
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column Group
+		dataType: string
+		lineageTag: bd5d4068-9335-4452-a569-53ba0a0444e6
+		summarizeBy: none
+		sourceColumn: Group
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritory_name
+		dataType: string
+		lineageTag: 1258837a-dedb-496b-827a-dba469dc52ed
+		summarizeBy: none
+		sourceColumn: SalesTerritory_name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SalesTerritory-20267e8c-38ca-406b-a623-bf877951dbdf = m
+		mode: import
+		queryGroup: DIM
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    SalesTerritory_Table = Source{[Item="SalesTerritory",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(SalesTerritory_Table,{{"SalesTerritoryKey", Int64.Type}, {"Region", type text}, {"Country", type text}, {"Group", type text}}),
+				    #"Personnalisée ajoutée" = Table.AddColumn(#"Type modifié", "SalesTerritory_name", each "Territory " & Number.ToText([SalesTerritoryKey])),
+				    #"Type modifié1" = Table.TransformColumnTypes(#"Personnalisée ajoutée",{{"SalesTerritory_name", type text}})
+				in
+				    #"Type modifié1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

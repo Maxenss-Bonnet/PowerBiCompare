@@ -1,0 +1,19 @@
+table NewParam
+	lineageTag: 9757de9f-f85e-411f-90af-81015f70a623
+
+	column NewParam
+		dataType: string
+		lineageTag: 470ee6a4-4bfe-44c0-8df8-c9066065b156
+		summarizeBy: none
+		sourceColumn: NewParam
+
+		annotation SummarizationSetBy = Automatic
+
+	partition NewParam = m
+		mode: import
+		source = "Hello World!" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+

@@ -1,0 +1,188 @@
+table Sales_v2
+	lineageTag: 235352ca-d75f-41e6-94a0-9e1b1708d0ec
+
+	column SalesOrderLineKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 70a5454f-374c-498e-9190-c655770bc6b1
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResellerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f2ac86ff-9140-4b92-bb79-fa03801e2f9a
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 977a0590-2941-4b7a-ac21-ea28cc75aa0d
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e4a5c9d5-2688-4014-a53f-9d086e010b73
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 19089c1b-603e-414d-9311-1d723e7ee242
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column DueDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 925457b1-3981-4704-9e80-47e25277ca5a
+		summarizeBy: count
+		sourceColumn: DueDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: dc072e2b-289f-4d28-a2a1-98fe2901b64f
+		summarizeBy: count
+		sourceColumn: ShipDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e93f99a-39eb-4577-8399-c7a885f424b9
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Quantity'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7461224d-04e7-4dd6-a248-9d4fc95157f0
+		summarizeBy: sum
+		sourceColumn: Order Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Unit Price'
+		dataType: double
+		lineageTag: c7e2ec21-3794-4b6a-ada6-129ff157badf
+		summarizeBy: sum
+		sourceColumn: Unit Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Extended Amount'
+		dataType: double
+		lineageTag: fa0a5318-d330-45b6-8e97-6e5dfd472c79
+		summarizeBy: sum
+		sourceColumn: Extended Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Unit Price Discount Pct'
+		dataType: int64
+		formatString: 0
+		lineageTag: 12f5c3ac-43a1-444d-970f-ee73f624cdf6
+		summarizeBy: sum
+		sourceColumn: Unit Price Discount Pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Standard Cost'
+		dataType: double
+		lineageTag: dd9795c9-8f3e-4442-8aad-8192764d43fb
+		summarizeBy: sum
+		sourceColumn: Product Standard Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Total Product Cost'
+		dataType: double
+		lineageTag: b0350158-2a72-449a-9396-eb2e90b1dbe1
+		summarizeBy: sum
+		sourceColumn: Total Product Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Sales Amount'
+		dataType: double
+		lineageTag: 39570e60-7c9b-4a63-bb11-4abd56693920
+		summarizeBy: sum
+		sourceColumn: Sales Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column OrderDateKey_dt
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 442957a9-d8d8-48ca-bad6-7804f693ba21
+		summarizeBy: none
+		sourceColumn: OrderDateKey_dt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Sales_v2 = m
+		mode: import
+		queryGroup: FACT
+		source = ```
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    Sales_Table = Source{[Item="Sales",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Sales_Table,{{"SalesOrderLineKey", Int64.Type}, {"ResellerKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"ProductKey", Int64.Type}, {"OrderDateKey", Int64.Type}, {"DueDateKey", Int64.Type}, {"ShipDateKey", Int64.Type}, {"SalesTerritoryKey", Int64.Type}, {"Order Quantity", Int64.Type}, {"Unit Price", type number}, {"Extended Amount", type number}, {"Unit Price Discount Pct", Int64.Type}, {"Product Standard Cost", type number}, {"Total Product Cost", type number}, {"Sales Amount", type number}}),
+				    #"Lignes filtrées" = Table.SelectRows(#"Type modifié", each not (
+				        ([SalesTerritoryKey] = 8 or [SalesTerritoryKey] = 7)
+				        and [OrderDateKey] >= 20200601 and [OrderDateKey] <= 20200630
+				    )),
+				    #"Duplication de la colonne" = Table.DuplicateColumn(#"Lignes filtrées", "OrderDateKey", "OrderDateKey - Copier"),
+				    #"Colonnes renommées" = Table.RenameColumns(#"Duplication de la colonne",{{"OrderDateKey - Copier", "OrderDateKey_dt"}}),
+				    #"Type modifié1" = Table.TransformColumns(
+				    #"Colonnes renommées",
+				    {
+				        {"OrderDateKey_dt", each 
+				            #date(
+				                Number.IntegerDivide(_, 10000),                   // Année
+				                Number.IntegerDivide(Number.Mod(_, 10000), 100), // Mois
+				                Number.Mod(_, 100)                               // Jour
+				            ), 
+				        type date}
+				    }
+				)
+				in
+				    #"Type modifié1"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

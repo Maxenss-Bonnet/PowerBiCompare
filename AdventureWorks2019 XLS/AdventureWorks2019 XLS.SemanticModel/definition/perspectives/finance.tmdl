@@ -1,0 +1,76 @@
+perspective finance
+
+	perspectiveTable Sales_light
+
+		perspectiveMeasure 'M_SUM Unit Price'
+
+		perspectiveMeasure 'M_AVG Unit Price'
+
+		perspectiveMeasure 'M_MIN Unit Price'
+
+		perspectiveMeasure 'M_MAX Unit Price'
+
+		perspectiveMeasure 'M_COUNT Unit Price'
+
+		perspectiveMeasure 'M_SUM Sales Amount'
+
+		perspectiveMeasure 'M_AVG Sales Amount'
+
+		perspectiveMeasure 'M_MIN Sales Amount'
+
+		perspectiveMeasure 'M_MAX Sales Amount'
+
+		perspectiveMeasure 'M_COUNT Sales Amount'
+
+	perspectiveTable Customer
+
+		perspectiveColumn CustomerKey
+
+		perspectiveColumn 'Customer ID'
+
+		perspectiveColumn Customer
+
+		perspectiveColumn City
+
+		perspectiveColumn State-Province
+
+		perspectiveColumn Country-Region
+
+		perspectiveColumn 'Postal Code'
+
+	perspectiveTable Date
+
+		perspectiveColumn DateKey
+
+		perspectiveColumn Date
+
+		perspectiveColumn 'Fiscal Year'
+
+		perspectiveColumn 'Fiscal Quarter'
+
+		perspectiveColumn Month
+
+		perspectiveColumn 'Full Date'
+
+		perspectiveColumn MonthKey
+
+	perspectiveTable Product
+
+		perspectiveColumn ProductKey
+
+		perspectiveColumn SKU
+
+		perspectiveColumn Product
+
+		perspectiveColumn 'Standard Cost'
+
+		perspectiveColumn Color
+
+		perspectiveColumn 'List Price'
+
+		perspectiveColumn Model
+
+		perspectiveColumn Subcategory
+
+		perspectiveColumn Category
+

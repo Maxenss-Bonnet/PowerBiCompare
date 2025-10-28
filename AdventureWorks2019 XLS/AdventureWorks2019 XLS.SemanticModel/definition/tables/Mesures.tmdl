@@ -1,0 +1,370 @@
+table Mesures
+	lineageTag: 818e5346-7113-409d-8acc-673bba71216f
+
+	measure _test_is_top =
+			
+			VAR end_date = EOMONTH(MAX('Date'[Date]),0)
+			VAR start_date = EOMONTH(end_date, -1) +1
+			VAR active_key_messages =
+			    SELECTCOLUMNS(
+			        TOPN(
+			            3
+			            , SUMMARIZE(
+			                ALL(SalesTerritory)
+			                , SalesTerritory[SalesTerritoryKey]
+			                , "count"
+			                , CALCULATE (
+			                    SUM(Sales[Order Quantity])
+			                    , CROSSFILTER('Date'[DateKey], Sales[OrderDateKey], NONE)
+			                    , Sales[OrderDateKey_dt] >= start_date && Sales[OrderDateKey_dt] <= end_date
+			                )
+			            )
+			            , [count], DESC
+			        )
+			        , "SalesTerritoryKey", [SalesTerritoryKey]
+			    )
+			
+			RETURN
+			    IF(
+			        MAX(Sales[SalesTerritoryKey]) IN active_key_messages
+			        , 1
+			        , 0
+			    )
+		formatString: 0
+		lineageTag: 2703d8fd-6c5a-4d9b-ae19-364ad32aa038
+
+	measure _end_date = EOMONTH(MAX('Date'[Date]),0)
+		formatString: General Date
+		lineageTag: b81f9cfc-a9d1-48c9-8812-1338f6347c82
+
+	measure _start_date = EOMONTH([_end_date], -1) +1
+		formatString: General Date
+		lineageTag: 3fce9145-069d-4b25-91e2-676eb57a7b5c
+
+	measure _test_qty_top =
+			
+			VAR end_date = EOMONTH(MAX('Date'[Date]),0)
+			VAR start_date = EOMONTH(end_date, -1) +1
+			VAR active_key_messages =
+			    SELECTCOLUMNS(
+			        TOPN(
+			            3
+			            , SUMMARIZE(
+			                ALL(SalesTerritory)
+			                , SalesTerritory[SalesTerritoryKey]
+			                , "count"
+			                , CALCULATE (
+			                    SUM(Sales[Order Quantity])
+			                    , CROSSFILTER('Date'[DateKey], Sales[OrderDateKey], NONE)
+			                    --, ALL(SalesTerritory)
+			                    , Sales[OrderDateKey_dt] >= start_date && Sales[OrderDateKey_dt] <= end_date
+			                )
+			            )
+			            , [count], DESC
+			        )
+			        , "SalesTerritoryKey", [SalesTerritoryKey]
+			    )
+			
+			RETURN
+			    CALCULATE(
+			        SUM(Sales[Order Quantity])
+			        , Sales[SalesTerritoryKey] in active_key_messages
+			    )
+		formatString: 0
+		lineageTag: 016f8bbc-9451-469e-85ae-67d2a1fe2149
+
+	measure Qty = SUM ( Sales[Order Quantity] )
+		formatString: 0
+		displayFolder: New
+		lineageTag: f5b3cae0-b42f-483e-be90-24298de941fa
+
+	measure 'Selected Month' =
+			
+			VAR Sel = SELECTEDVALUE ( Slicer_Month[MonthStart] )
+			RETURN
+			COALESCE ( Sel, DATE ( YEAR ( MAX ( 'Date'[Date] ) ), MONTH ( MAX ( 'Date'[Date] ) ), 1 ) )
+		formatString: Short Date
+		displayFolder: New
+		lineageTag: 53d14cb3-ab88-46be-a6a9-4d191e83d8bc
+
+	measure 'Qty Selected Month' = ```
+			
+			VAR StartM = [Selected Month]
+			VAR EndM   = EOMONTH ( StartM, 0 )
+			RETURN
+			CALCULATE ( [Qty], DATESBETWEEN ( 'Date'[Date], StartM, EndM ) )
+			
+			```
+		formatString: 0
+		displayFolder: New
+		lineageTag: 370e8edf-36d8-45e6-afcb-2c62d2709281
+
+	measure 'Is Top3 (Selected Month)' = ```
+			
+			VAR StartM = [Selected Month]
+			VAR EndM   = EOMONTH ( StartM, 0 )
+			VAR Top3Table =
+			    TOPN (
+			        3,
+			        ADDCOLUMNS (
+			            ALL ( 'SalesTerritory'[SalesTerritoryKey] ),
+			            "QtySel", CALCULATE ( [Qty], DATESBETWEEN ( 'Date'[Date], StartM, EndM ) )
+			        ),
+			        [QtySel], DESC,
+			        'SalesTerritory'[SalesTerritoryKey], ASC
+			    )
+			RETURN
+			IF (
+			    CONTAINS ( Top3Table, 'SalesTerritory'[SalesTerritoryKey], SELECTEDVALUE ( 'SalesTerritory'[SalesTerritoryKey] ) ),
+			    1, 0
+			)
+			
+			```
+		formatString: 0
+		displayFolder: New
+		lineageTag: cb1a6976-0b9d-4456-a27d-278ba5f41839
+
+	measure 'Qty (12M window, Frozen Top3)' = ```
+			
+			VAR EndM   = EOMONTH ( [Selected Month], 0 )
+			VAR StartM = EDATE ( EndM, -11 )
+			VAR ThisMonthStart = DATE ( YEAR ( MAX ( 'Date'[Date] ) ), MONTH ( MAX ( 'Date'[Date] ) ), 1 )
+			RETURN
+			IF (
+			    ThisMonthStart >= StartM && ThisMonthStart <= EndM && [Is Top3 (Selected Month)] = 1,
+			    [Qty],
+			    BLANK ()
+			)
+			
+			```
+		formatString: 0
+		displayFolder: New
+		lineageTag: 22b5fe37-f0c7-4f79-b63c-2e8b48b5da24
+
+	measure _ChatGPT_test_is_top = ```
+			
+			VAR EndDate = EOMONTH(MAX('Date'[Date]), 0)
+			VAR StartDate = EOMONTH(EndDate, -1) + 1
+			VAR QtyCurrent =
+			    CALCULATE(
+			        SUM (Sales[Order Quantity])
+			        , Sales[OrderDateKey_dt] >= StartDate
+			        , Sales[OrderDateKey_dt] <= EndDate
+			    )
+			VAR RankCurrent =
+			    RANKX(
+			        ALL(SalesTerritory)
+			        , CALCULATE (
+			            SUM(Sales[Order Quantity])
+			            , Sales[OrderDateKey_dt] >= StartDate
+			            , Sales[OrderDateKey_dt] <= EndDate
+			        )
+			        ,
+			        , DESC
+			        , DENSE
+			    )
+			
+			RETURN
+			    IF(
+			        NOT ISBLANK(QtyCurrent) && RankCurrent <= 3
+			        , 1
+			        , 0 
+			    )
+			
+			```
+		formatString: 0
+		lineageTag: 0d0d120f-488f-4ec3-97c9-4238ba168233
+
+	measure _ChatGPT_test_qty_top = ```
+			
+			VAR EndDate = EOMONTH(MAX('Date'[Date]), 0)
+			VAR StartDate = EOMONTH(EndDate, -1) + 1
+			VAR QtyCurrent =
+			    CALCULATE(
+			        SUM(Sales[Order Quantity])
+			            , CROSSFILTER('Date'[DateKey], Sales[OrderDateKey], NONE)
+			        , Sales[OrderDateKey_dt] >= StartDate
+			        , Sales[OrderDateKey_dt] <= EndDate
+			    )
+			VAR RankCurrent =
+			    RANKX(
+			        ALL(SalesTerritory)
+			        , CALCULATE (
+			            SUM(Sales[Order Quantity])
+			                , CROSSFILTER('Date'[DateKey], Sales[OrderDateKey], NONE)
+			            , Sales[OrderDateKey_dt] >= StartDate
+			            , Sales[OrderDateKey_dt] <= EndDate
+			        )
+			        ,
+			        , DESC
+			        , DENSE
+			    )
+			
+			RETURN
+			    IF(
+			        NOT ISBLANK(QtyCurrent) && RankCurrent <= 3
+			        , CALCULATE(
+			            SUM(Sales[Order Quantity])
+			        )
+			        , BLANK()
+			    )
+			
+			```
+		formatString: 0
+		lineageTag: e6f890b2-1cea-4c30-9d3e-d40d41149da6
+
+	measure 'Qty (Top3 frozen, 12M)' = ```
+			
+			VAR EndMonth   = EOMONTH ( MAX ( 'Date'[Date] ), 0 )
+			VAR RefEndMonth =
+			    EOMONTH ( MAX ( 'Date'[Date] ), 0 )   -- 👉 par défaut dernier mois du contexte
+			    -- ou utiliser ton slicer déconnecté si tu veux figer le mois de référence
+			VAR RefStartMonth = EOMONTH ( RefEndMonth, -1 ) + 1
+			
+			-- 1. Identifier le Top 3 sur le mois de référence uniquement
+			VAR Top3Table =
+			    TOPN (
+			        3,
+			        SUMMARIZE (
+			            FILTER (
+			                Sales,
+			                Sales[OrderDateKey_dt] >= RefStartMonth &&
+			                Sales[OrderDateKey_dt] <= RefEndMonth
+			            ),
+			            Sales[SalesTerritoryKey],
+			            "QtyRef", SUM ( Sales[Order Quantity] )
+			        ),
+			        [QtyRef], DESC
+			    )
+			
+			-- 2. Définir la fenêtre des 12 mois avant le mois de référence
+			VAR WindowStart = EDATE ( RefEndMonth, -11 )
+			
+			-- 3. Vérifier si le territoire courant est dans le Top 3
+			VAR IsTop3 =
+			    CONTAINS (
+			        Top3Table,
+			        Sales[SalesTerritoryKey], SELECTEDVALUE ( SalesTerritory[SalesTerritoryKey] )
+			    )
+			
+			-- 4. Retourner les quantités sur les 12 mois si Top 3
+			RETURN
+			IF (
+			    IsTop3,
+			    CALCULATE (
+			        SUM ( Sales[Order Quantity] ),
+			        Sales[OrderDateKey_dt] >= WindowStart,
+			        Sales[OrderDateKey_dt] <= RefEndMonth
+			    ),
+			    BLANK ()
+			)
+			
+			```
+		formatString: 0
+		displayFolder: New
+		lineageTag: 603c1260-391c-4f6e-91d4-390af3d73121
+
+	measure _SUM = ```
+			
+			    SUM(Sales[Order Quantity])
+			```
+		formatString: 0
+		lineageTag: 2f5f0828-9363-48d0-a919-416dde0bce25
+
+	measure '_Rolling 12 Month_end' = ```
+			
+			VAR SelectedDate = Max('Date'[Date]) 
+			VAR PreviousDate = DATESINPERIOD(Date2[Date], SelectedDate, -12, MONTH) 
+			
+			RETURN Max('Date'[Date])  /*
+			    CALCULATE(
+			        SELECTEDMEASURE()
+			        , REMOVEFILTERS('Date')
+			        , KEEPFILTERS(PreviousDate)
+			        , USERELATIONSHIP(Date2[DateKey],'Date'[DateKey])
+			    )*/
+			```
+		formatString: Short Date
+		lineageTag: fa68f429-5838-4331-83ad-f6678b567493
+
+	measure '_Rolling 12 Month_start' = ```
+			
+			VAR SelectedDate = Max('Date'[Date]) 
+			VAR PreviousDate = DATESINPERIOD(Date2[Date], SelectedDate, -12, MONTH) 
+			
+			RETURN MINX(
+			    DATESINPERIOD(
+			        Date2[Date],
+			        SelectedDate,
+			        -12,
+			        MONTH
+			    ),
+			    Date2[Date]
+			)  /*
+			    CALCULATE(
+			        SELECTEDMEASURE()
+			        , REMOVEFILTERS('Date')
+			        , KEEPFILTERS(PreviousDate)
+			        , USERELATIONSHIP(Date2[DateKey],'Date'[DateKey])
+			    )*/
+			```
+		formatString: Short Date
+		lineageTag: 87da4699-cc0c-4c85-9e02-c41484dcc343
+
+	measure _test_qty_top2 = ```
+			
+			
+			CALCULATE( 
+			    [_test_qty_top],
+			    SAMEPERIODLASTYEAR('Date'[Date])
+			)
+			```
+		formatString: 0
+		lineageTag: d46954a5-8c18-47dc-b5d6-1c48d5dce17d
+
+	measure _test_qty_top_v2 =
+			
+			VAR end_date = EOMONTH(MAX('Date'[Date]),0)
+			VAR start_date = EOMONTH(end_date, -1) +1
+			VAR active_key_messages =
+			    SELECTCOLUMNS(
+			        TOPN(
+			            3
+			            , SUMMARIZE(
+			                ALL(SalesTerritory)
+			                , SalesTerritory[SalesTerritoryKey]
+			                , "count"
+			                , CALCULATE (
+			                    SUM(Sales_v2[Order Quantity])
+			                    , CROSSFILTER('Date'[DateKey], Sales_v2[OrderDateKey], NONE)
+			                    --, ALL(SalesTerritory)
+			                    , Sales_v2[OrderDateKey_dt] >= start_date && Sales_v2[OrderDateKey_dt] <= end_date
+			                )
+			            )
+			            , [count], DESC
+			        )
+			        , "SalesTerritoryKey", [SalesTerritoryKey]
+			    )
+			
+			RETURN
+			    CALCULATE(
+			        SUM(Sales[Order Quantity])
+			        , Sales[SalesTerritoryKey] in active_key_messages
+			    )
+		formatString: 0
+		lineageTag: 963113f9-844c-4c39-80b1-d731da48cb4e
+
+	partition Mesures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Colonne 1" = _t]),
+				    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Colonne 1", type text}}),
+				    #"Colonnes supprimées" = Table.RemoveColumns(#"Type modifié",{"Colonne 1"})
+				in
+				    #"Colonnes supprimées"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

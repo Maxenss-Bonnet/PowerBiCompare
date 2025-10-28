@@ -1,0 +1,200 @@
+table Sales
+	lineageTag: 1d42a11b-470a-4cd1-8751-9e3b8f100a8a
+
+	column SalesOrderLineKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 289f5de7-06e2-429f-a704-ab2dacc0de2b
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResellerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b4810964-8b23-450c-a02f-40d9991e72b2
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: df440747-77c0-49a3-8005-fe98b8a4c019
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 2d2745c5-2e97-456f-96e2-4d914b6c3b56
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: b4415ae1-a088-4a98-8448-21812eced3c1
+		summarizeBy: none
+		sourceColumn: OrderDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column DueDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 503e3b0b-c257-4ef7-be45-42ac4eb9aca7
+		summarizeBy: count
+		sourceColumn: DueDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipDateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 82ceea9a-3476-494f-afcd-e7392e144cd0
+		summarizeBy: count
+		sourceColumn: ShipDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e9cccc93-5e62-4073-a80e-b8461dc45adc
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Quantity'
+		dataType: int64
+		formatString: 0
+		lineageTag: c9358f21-840d-488f-b78e-ef3161f37acb
+		summarizeBy: sum
+		sourceColumn: Order Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Unit Price'
+		dataType: double
+		lineageTag: 0a823ee3-7ea8-4fbb-b9a5-7671164a4a56
+		summarizeBy: sum
+		sourceColumn: Unit Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Extended Amount'
+		dataType: double
+		lineageTag: 276106ca-c4a7-4113-8093-3dd10a3c3dcf
+		summarizeBy: sum
+		sourceColumn: Extended Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Unit Price Discount Pct'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8587df35-d7a3-4637-930b-a2fce7b7ea1b
+		summarizeBy: sum
+		sourceColumn: Unit Price Discount Pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Standard Cost'
+		dataType: double
+		lineageTag: 60421e66-6ff0-40f0-a281-2854b5bc3cd9
+		summarizeBy: sum
+		sourceColumn: Product Standard Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Total Product Cost'
+		dataType: double
+		lineageTag: 0bde8285-0e4d-49bc-a827-7eac20e8cc9a
+		summarizeBy: sum
+		sourceColumn: Total Product Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Sales Amount'
+		dataType: double
+		lineageTag: 7076651a-245d-4400-9069-7f33b43b0e0e
+		summarizeBy: sum
+		sourceColumn: Sales Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column OrderDateKey_dt
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2afdccab-296e-4f68-a7f9-307a32a7a685
+		summarizeBy: none
+		sourceColumn: OrderDateKey_dt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column OrderDateKey_dt_MONTH
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c558250a-2546-42a8-9483-159372baa965
+		summarizeBy: none
+		sourceColumn: OrderDateKey_dt_MONTH
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Sales-bb9087c8-75e5-4245-baf2-31a981d03e37 = m
+		mode: import
+		queryGroup: FACT
+		source = ```
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    Sales_Table = Source{[Item="Sales",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Sales_Table,{{"SalesOrderLineKey", Int64.Type}, {"ResellerKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"ProductKey", Int64.Type}, {"OrderDateKey", Int64.Type}, {"DueDateKey", Int64.Type}, {"ShipDateKey", Int64.Type}, {"SalesTerritoryKey", Int64.Type}, {"Order Quantity", Int64.Type}, {"Unit Price", type number}, {"Extended Amount", type number}, {"Unit Price Discount Pct", Int64.Type}, {"Product Standard Cost", type number}, {"Total Product Cost", type number}, {"Sales Amount", type number}}),
+				    #"Lignes filtrées" = Table.SelectRows(#"Type modifié", each not (
+				        ([SalesTerritoryKey] = 8 or [SalesTerritoryKey] = 7)
+				        and [OrderDateKey] >= 20200601 and [OrderDateKey] <= 20200630
+				    )),
+				    #"Duplication de la colonne" = Table.DuplicateColumn(#"Lignes filtrées", "OrderDateKey", "OrderDateKey_dt"),
+				    #"Type modifié1" = Table.TransformColumns(
+				    #"Duplication de la colonne",
+				    {
+				        {"OrderDateKey_dt", each 
+				            #date(
+				                Number.IntegerDivide(_, 10000),                   // Année
+				                Number.IntegerDivide(Number.Mod(_, 10000), 100), // Mois
+				                Number.Mod(_, 100)                               // Jour
+				            ), 
+				        type date}
+				    }
+				),
+				    #"Duplicated Column" = Table.DuplicateColumn(#"Type modifié1", "OrderDateKey_dt", "OrderDateKey_dt_MONTH"),
+				    #"Calculated Start of Month" = Table.TransformColumns(#"Duplicated Column",{{"OrderDateKey_dt_MONTH", Date.StartOfMonth, type date}})
+				in
+				    #"Calculated Start of Month"
+				```
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

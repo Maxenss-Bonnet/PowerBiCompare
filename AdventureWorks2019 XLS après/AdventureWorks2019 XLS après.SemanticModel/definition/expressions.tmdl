@@ -1,0 +1,19 @@
+expression Source = "C:\Users\WJQN1684\OneDrive - orange.com\Documents\Power BI" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 4a350a43-fa8f-4a25-be23-c0622a716b0e
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Text
+
+expression Date3 =
+		let
+		    Source = Date2
+		in
+		    Source
+	lineageTag: 502fed83-8707-41ad-97bd-cdfb9109e74f
+	queryGroup: DIM\Dates
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

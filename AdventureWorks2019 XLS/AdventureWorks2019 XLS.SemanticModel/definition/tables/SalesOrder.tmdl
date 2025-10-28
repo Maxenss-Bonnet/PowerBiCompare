@@ -1,0 +1,59 @@
+table SalesOrder
+	lineageTag: c680dc68-f7b5-4c2b-8431-428364f7af59
+
+	column Channel
+		dataType: string
+		lineageTag: cfb93582-7465-4a9f-bfcc-de89d82cd10c
+		summarizeBy: none
+		sourceColumn: Channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesOrderLineKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 42970050-6cf9-43b6-bc96-eadbc7bc65d2
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Order'
+		dataType: string
+		lineageTag: b2eeb93a-7670-4301-b080-97796e97286f
+		summarizeBy: none
+		sourceColumn: Sales Order
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sales Order Line'
+		dataType: string
+		lineageTag: b8746a5e-3fc2-42ef-a193-cbd48fcea917
+		summarizeBy: none
+		sourceColumn: Sales Order Line
+
+		annotation SummarizationSetBy = Automatic
+
+	column toto
+		dataType: string
+		lineageTag: b9b65211-da9c-488c-8e0b-c372d3d39af9
+		summarizeBy: none
+		sourceColumn: toto
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SalesOrder-8426e5b2-89bb-4834-bee9-c0430de4f39c = m
+		mode: import
+		queryGroup: FACT
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    SalesOrder_Table = Source{[Item="SalesOrder",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(SalesOrder_Table,{{"Channel", type text}, {"SalesOrderLineKey", Int64.Type}, {"Sales Order", type text}, {"Sales Order Line", type text}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,42 @@
+table dependencies
+	lineageTag: d0e1c061-9122-4ac6-a27c-fca83d25ff0a
+
+	column Source
+		dataType: string
+		lineageTag: 36aa7a95-145e-4490-a8c3-78fd392b37c7
+		summarizeBy: none
+		sourceColumn: Source
+
+		annotation SummarizationSetBy = Automatic
+
+	column Target
+		dataType: string
+		lineageTag: b8934969-5010-4422-bc3d-494653aad5c6
+		summarizeBy: none
+		sourceColumn: Target
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		lineageTag: 8e71c000-31e9-4e48-9366-fd04759fd1df
+		summarizeBy: none
+		sourceColumn: Type
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dependencies = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\temp\dependencies.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+				    #"En-têtes promus" = Table.PromoteHeaders(#"Type modifié", [PromoteAllScalars=true]),
+				    #"Type modifié1" = Table.TransformColumnTypes(#"En-têtes promus",{{"Source", type text}, {"Target", type text}, {"Type", type text}})
+				in
+				    #"Type modifié1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

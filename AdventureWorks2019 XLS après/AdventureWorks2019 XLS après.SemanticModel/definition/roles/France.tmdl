@@ -1,0 +1,7 @@
+role France
+	modelPermission: read
+
+	tablePermission DIM_COUNTRY = [Country] == "France"
+
+	annotation PBI_Id = 175b99377c3a4ce5957dbd0c0b4e5e53
+

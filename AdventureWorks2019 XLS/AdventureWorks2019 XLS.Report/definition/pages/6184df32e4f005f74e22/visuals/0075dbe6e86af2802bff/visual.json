@@ -1,0 +1,231 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "0075dbe6e86af2802bff",
+  "position": {
+    "x": 468.13186813186815,
+    "y": 342.85714285714289,
+    "z": 3000,
+    "height": 377.14285714285717,
+    "width": 311.20879120879124,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "OrderDateKey_dt_MONTH"
+                }
+              },
+              "queryRef": "Sales.OrderDateKey_dt_MONTH",
+              "nativeQueryRef": "Month",
+              "displayName": "Month",
+              "format": "yyyy MMM"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SalesTerritory"
+                    }
+                  },
+                  "Property": "SalesTerritoryKey"
+                }
+              },
+              "queryRef": "SalesTerritory.SalesTerritoryKey",
+              "nativeQueryRef": "SalesTerritoryKey"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Mesures"
+                    }
+                  },
+                  "Property": "_test_qty_top_v2"
+                }
+              },
+              "queryRef": "Mesures._test_qty_top_v2",
+              "nativeQueryRef": "_test_qty_top_v2"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Sales"
+                  }
+                },
+                "Property": "OrderDateKey_dt_MONTH"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "110.11749199819064D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "SalesTerritory.SalesTerritoryKey"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Sales|MONTH]'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2cb469dcf5b5089687c7",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Groupe de calcul"
+              }
+            },
+            "Property": "Colonne du groupe de calcul"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "g",
+              "Entity": "Groupe de calcul",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "g"
+                          }
+                        },
+                        "Property": "Colonne du groupe de calcul"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Rolling 12 Month'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "791b5de59b4f48304877",
+        "ordinal": 1,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Mesures"
+              }
+            },
+            "Property": "_test_qty_top_v2"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "402e18c8684ddb52d587",
+        "ordinal": 2,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "SalesTerritory"
+              }
+            },
+            "Property": "SalesTerritoryKey"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1263dd1b85784d3586a6",
+        "ordinal": 3,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Sales"
+              }
+            },
+            "Property": "OrderDateKey_dt"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      }
+    ],
+    "filterSortOrder": "Custom"
+  }
+}

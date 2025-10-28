@@ -1,0 +1,141 @@
+table Date
+	lineageTag: 89f23855-eefa-48a5-8d98-e3d99996cb92
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 9c5c9896-fcfe-429b-943b-73bdd8c8613a
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 547e55d6-0e57-4208-94dd-44b9545ea72d
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fiscal Year'
+		dataType: string
+		lineageTag: c9e7ff53-e03d-4a55-8310-d142f0c673a6
+		summarizeBy: none
+		sourceColumn: Fiscal Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fiscal Quarter'
+		dataType: string
+		lineageTag: e849c893-1922-45b1-ac83-791dc3f92075
+		summarizeBy: none
+		sourceColumn: Fiscal Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: d2aef471-0a65-4a56-ac11-1685a9183538
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: MonthKey
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Full Date'
+		dataType: string
+		lineageTag: d8cc1752-debc-43dd-9676-75b56f453d78
+		summarizeBy: none
+		sourceColumn: Full Date
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c9a85c9f-c5c9-451f-bc04-1b5523ccc1c2
+		summarizeBy: count
+		sourceColumn: MonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthStart
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8747e240-975e-4312-85bd-53619cd5e891
+		summarizeBy: none
+		sourceColumn: MonthStart
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Month name'
+		dataType: string
+		lineageTag: da825e20-f490-45bc-891b-5d5a721da251
+		summarizeBy: none
+		sourceColumn: Month name
+		sortByColumn: 'Month number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: 03dd2f9c-8736-4bb5-9d44-d91f85d1e677
+		summarizeBy: sum
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month number'
+		dataType: int64
+		formatString: 0
+		lineageTag: a5f63a6d-afd4-45ba-aff7-aca6ce6521ed
+		summarizeBy: sum
+		sourceColumn: Month number
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: b53ebb1c-8827-4741-b21c-15e35ca86edd
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Date-1d23086a-769c-4b42-b23f-7478fab35ae6 = m
+		mode: import
+		queryGroup: DIM\Dates
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    Date_Table = Source{[Item="Date",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Date_Table,{{"DateKey", Int64.Type}, {"Date", type date}, {"Fiscal Year", type text}, {"Fiscal Quarter", type text}, {"MonthKey", Int64.Type}}),
+				    #"Personnalisée ajoutée" = Table.AddColumn(#"Type modifié", "MonthStart", each Date.StartOfMonth([Date])),
+				    #"Duplicated Column" = Table.DuplicateColumn(#"Personnalisée ajoutée", "Date", "Year"),
+				    // Commentaire à supprimer
+				    #"Extracted Year" = Table.TransformColumns(#"Duplicated Column",{{"Year", Date.Year, Int64.Type}}),
+				    #"Duplicated Column1" = Table.DuplicateColumn(#"Extracted Year", "Date", "Month name"),
+				    #"Extracted Month Name" = Table.TransformColumns(#"Duplicated Column1", {{"Month name", each Date.MonthName(_), type text}}),
+				    #"Duplicated Column2" = Table.DuplicateColumn(#"Extracted Month Name", "Date", "Day"),
+				    #"Extracted Day" = Table.TransformColumns(#"Duplicated Column2",{{"Day", Date.Day, Int64.Type}}),
+				    #"Added Custom" = Table.AddColumn(#"Extracted Day", "Month number", each Date.Month([Date])),
+				    #"Type modifié1" = Table.TransformColumnTypes(#"Added Custom",{{"MonthStart", type date}, {"Month", type text}, {"Full Date", type text}, {"Month number", Int64.Type}})
+				in
+				    #"Type modifié1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

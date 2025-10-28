@@ -1,0 +1,75 @@
+table Customer
+	lineageTag: 1b7f687e-4e10-4e49-abb8-c33da83fe3e7
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: a165a101-4f95-4190-a3f9-0684c7831ff8
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Customer ID'
+		dataType: string
+		lineageTag: f927426d-d6c7-48cb-ba00-74ceca6d46fb
+		summarizeBy: none
+		sourceColumn: Customer ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer
+		dataType: string
+		lineageTag: d2e2512f-c05b-4268-bfd2-2a36a8ad3329
+		summarizeBy: none
+		sourceColumn: Customer
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 40d6d83b-e18d-4943-9f74-338ed0aea28d
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State-Province
+		dataType: string
+		lineageTag: a5860e30-9343-438b-98e0-43c43cb035b5
+		summarizeBy: none
+		sourceColumn: State-Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country-Region
+		dataType: string
+		lineageTag: 1dd401a3-8580-4195-850e-718b81d7fee7
+		summarizeBy: none
+		sourceColumn: Country-Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Postal Code'
+		dataType: string
+		lineageTag: 19c5b8c0-8c5e-4966-9710-c0d83ac65aed
+		summarizeBy: none
+		sourceColumn: Postal Code
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Customer-be6699f5-c16b-43ed-88c8-04c949daf914 = m
+		mode: import
+		queryGroup: DIM
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    Customer_Table = Source{[Item="Customer",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Customer_Table,{{"CustomerKey", Int64.Type}, {"Customer ID", type text}, {"Customer", type text}, {"City", type text}, {"State-Province", type text}, {"Country-Region", type text}, {"Postal Code", type text}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,40 @@
+table 'Groupe de calcul'
+	lineageTag: 612e4c39-2285-4e92-b464-d25119d95f9c
+
+	calculationGroup
+
+		calculationItem 'Rolling 12 Month' = ```
+				
+				VAR SelectedDate = MAX('Date'[Date]) 
+				VAR PreviousDate = DATESINPERIOD(Date2[Date], SelectedDate, -12, MONTH) 
+				
+				RETURN  
+				    CALCULATE(
+				        SELECTEDMEASURE()
+				        , REMOVEFILTERS('Date')
+				        , KEEPFILTERS(PreviousDate)
+				        , USERELATIONSHIP(Date2[DateKey],'Date'[DateKey])
+				    )
+				    * 4
+				```
+
+		calculationItem 'Calculation item' = SELECTEDMEASURE()
+
+	column 'Colonne du groupe de calcul'
+		dataType: string
+		lineageTag: 4e49d7bb-f654-41d1-a876-add3860488ed
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordinal
+		dataType: int64
+		formatString: 0
+		lineageTag: c978d47d-7a53-4822-87bd-2bf27601c961
+		summarizeBy: sum
+		sourceColumn: Ordinal
+
+		annotation SummarizationSetBy = Automatic
+

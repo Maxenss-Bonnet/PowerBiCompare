@@ -1,0 +1,44 @@
+table Date3
+	lineageTag: b96c66b2-391c-44de-9204-ff09fad367c9
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 10574e4b-7aa1-43ac-986e-eba87715859c
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 96a4aa73-d889-4927-b5c2-e332f46f22d0
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Month
+		dataType: string
+		lineageTag: b7dca32a-ba29-4500-aeb7-82706ed61f5c
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Date3 = m
+		mode: import
+		queryGroup: DIM\Dates
+		source =
+				let
+				    Source = Date2
+				in
+				    Source
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

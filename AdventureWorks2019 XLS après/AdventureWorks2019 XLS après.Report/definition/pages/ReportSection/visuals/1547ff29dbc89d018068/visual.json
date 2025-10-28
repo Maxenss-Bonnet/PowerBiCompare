@@ -1,0 +1,57 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "1547ff29dbc89d018068",
+  "position": {
+    "x": 195.16483516483518,
+    "y": 104.17582417582418,
+    "z": 0,
+    "height": 288.79120879120882,
+    "width": 344.17582417582418
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "SalesTerritory"
+                    }
+                  },
+                  "Property": "Region"
+                }
+              },
+              "queryRef": "SalesTerritory.Region",
+              "nativeQueryRef": "Region"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Sales"
+                        }
+                      },
+                      "Property": "Extended Amount"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Sales.Extended Amount)",
+              "nativeQueryRef": "Somme de Extended Amount"
+            }
+          ],
+          "showAll": true
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

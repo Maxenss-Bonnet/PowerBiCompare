@@ -1,0 +1,26 @@
+table DIM_COUNTRY
+	lineageTag: df30ab2e-4918-4cf3-a23c-2c4532dda54d
+
+	column Country
+		dataType: string
+		lineageTag: 5f8ce720-9733-4faf-ba08-6083a8be4893
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DIM_COUNTRY = m
+		mode: import
+		queryGroup: DIM
+		source =
+				let
+				    Source = SalesTerritory,
+				    #"Autres colonnes supprimées" = Table.SelectColumns(Source,{"Country"}),
+				    #"Doublons supprimés" = Table.Distinct(#"Autres colonnes supprimées")
+				in
+				    #"Doublons supprimés"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

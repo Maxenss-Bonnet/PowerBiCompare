@@ -1,0 +1,20 @@
+perspective 'New Perspective'
+
+	perspectiveTable Reseller
+
+		perspectiveColumn ResellerKey
+
+		perspectiveColumn 'Reseller ID'
+
+		perspectiveColumn 'Business Type'
+
+		perspectiveColumn Reseller
+
+		perspectiveColumn City
+
+		perspectiveColumn State-Province
+
+		perspectiveColumn Country-Region
+
+		perspectiveColumn 'Postal Code'
+

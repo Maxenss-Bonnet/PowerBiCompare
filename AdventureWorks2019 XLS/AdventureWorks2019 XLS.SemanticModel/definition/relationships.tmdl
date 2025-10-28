@@ -1,0 +1,101 @@
+relationship b2f9496b-4605-4f67-9397-44ea1f084998
+	fromColumn: Sales.CustomerKey
+	toColumn: Customer.CustomerKey
+
+relationship b448768e-61f0-4028-a874-a83406e92c30
+	fromColumn: Sales.ProductKey
+	toColumn: Product.ProductKey
+
+relationship 3bf7c77a-75a5-498e-b6f5-99ba4b6c1f49
+	fromColumn: Sales.ResellerKey
+	toColumn: Reseller.ResellerKey
+
+relationship d41c845d-2dc0-4ca1-bc2a-52dbe5ff8a23
+	fromColumn: Sales.SalesTerritoryKey
+	toColumn: SalesTerritory.SalesTerritoryKey
+
+relationship a4ec6d01-8a22-40e0-b3ad-875212aa9f18
+	fromColumn: Sales.OrderDateKey
+	toColumn: Date.DateKey
+
+relationship AutoDetected_537c8326-ce16-4132-8d44-41f43b986018
+	fromColumn: Sales_light.CustomerKey
+	toColumn: Customer.CustomerKey
+
+relationship 555cde8a-9163-e6ca-8e22-3777cbded442
+	isActive: false
+	fromColumn: Date.DateKey
+	toColumn: Date2.DateKey
+
+relationship 479b5d0d-b663-7c90-e44b-493ce4f91172
+	fromColumn: Sales.SalesOrderLineKey
+	toColumn: SalesOrder.SalesOrderLineKey
+
+relationship AutoDetected_3bc1b7d8-8e50-4ab7-9feb-bb992a60a111
+	fromColumn: SalesTerritory.Country
+	toColumn: DIM_COUNTRY.Country
+
+relationship AutoDetected_2ff466fc-ce8b-4fe2-aea4-0b160e79d6cf
+	fromColumn: Sales_v2.CustomerKey
+	toColumn: Customer.CustomerKey
+
+relationship AutoDetected_852f545f-843d-4a61-b3bd-bc55b7ca256d
+	fromColumn: Sales_v2.ProductKey
+	toColumn: Product.ProductKey
+
+relationship AutoDetected_5bd9285d-c0f6-4e28-b5d5-415d64abae12
+	fromColumn: Sales_v2.ResellerKey
+	toColumn: Reseller.ResellerKey
+
+relationship AutoDetected_5622003c-2881-486a-9ba7-fa4e5e46d068
+	fromColumn: Sales_v2.SalesOrderLineKey
+	toColumn: SalesOrder.SalesOrderLineKey
+
+relationship AutoDetected_33e52fb1-9f10-43ef-bb70-6f6e4b6b8608
+	fromColumn: Sales_v2.SalesTerritoryKey
+	toColumn: SalesTerritory.SalesTerritoryKey
+
+relationship e4fb11c9-53dd-dea4-1f15-e231fe05dd48
+	fromColumn: Sales_v2.OrderDateKey
+	toColumn: Date.DateKey
+
+relationship 9781c9d7-cdf1-1aed-c892-50ea7d58b6bd
+	fromColumn: Sales.OrderDateKey
+	toColumn: Date3.DateKey
+
+relationship AutoDetected_aa6ebb18-91c7-4cb2-a27a-f75a83dcf13f
+	fromColumn: 'FACT_Useless table'.CustomerKey
+	toColumn: Customer.CustomerKey
+
+relationship AutoDetected_9e72021f-8e37-49a5-9f58-5d0c2e9422d2
+	fromColumn: 'FACT_Useless table'.ProductKey
+	toColumn: Product.ProductKey
+
+relationship AutoDetected_daeb9302-62ba-4ea5-9f6f-9b6a62e4e706
+	fromColumn: 'FACT_Useless table'.ResellerKey
+	toColumn: Reseller.ResellerKey
+
+relationship AutoDetected_86509f6f-a93b-4405-8e8b-5518bbd6167c
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'FACT_Useless table'.SalesOrderLineKey
+	toColumn: SalesOrder.SalesOrderLineKey
+
+relationship AutoDetected_9002a909-7ba5-4c62-9e43-a4ae021cc3e0
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: 'FACT_Useless table'.SalesOrderLineKey
+	toColumn: Sales_light.SalesOrderLineKey
+
+relationship AutoDetected_2053e8d1-c628-44b5-aae5-17b228555646
+	fromColumn: 'FACT_Useless table'.SalesTerritoryKey
+	toColumn: SalesTerritory.SalesTerritoryKey
+
+relationship 74c77e5c-b617-0e30-f303-994670eca033
+	fromColumn: 'FACT_Useless table'.OrderDateKey
+	toColumn: Date.DateKey
+
+relationship 4a22aba4-427e-6c31-6b95-5eaf68b04ded
+	fromColumn: Sales.OrderDateKey
+	toColumn: Date2.DateKey
+

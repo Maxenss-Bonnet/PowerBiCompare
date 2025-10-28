@@ -1,0 +1,95 @@
+table Product
+	lineageTag: 5e31d2bd-ee42-483f-948e-4ebe8c89342f
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 26c1529d-41c1-448f-a795-d63131829749
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SKU
+		dataType: string
+		lineageTag: 303ef195-b75f-4d34-abd7-ccbef1cd6742
+		summarizeBy: none
+		sourceColumn: SKU
+
+		annotation SummarizationSetBy = Automatic
+
+	column Product
+		dataType: string
+		lineageTag: 12b88334-f208-405d-af5a-b9f0580db099
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Standard Cost'
+		dataType: double
+		lineageTag: 652d83dd-c021-43c2-a045-3c7c79ad2405
+		summarizeBy: sum
+		sourceColumn: Standard Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Color
+		dataType: string
+		lineageTag: 20687890-c181-4fe4-aeb0-9b7110b26e37
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'List Price'
+		dataType: double
+		lineageTag: ca5b5a71-13eb-4504-b125-c8cfe3236064
+		summarizeBy: sum
+		sourceColumn: List Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Model
+		dataType: string
+		lineageTag: 4f4e0a16-9046-4369-89fd-cb78fdd42f6d
+		summarizeBy: none
+		sourceColumn: Model
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subcategory
+		dataType: string
+		lineageTag: 27b874b2-6029-4f5e-8d0c-fec1e10c8e65
+		summarizeBy: none
+		sourceColumn: Subcategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: c7f74c86-e024-4842-8e96-e279293eb596
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product-f29c4f2d-5156-4d45-807f-1a7cdf50f0d2 = m
+		mode: import
+		queryGroup: DIM
+		source =
+				let
+				    Source = Excel.Workbook(Web.Contents(Source & "\AdventureWorks Sales.xlsx"), null, true),
+				    Product_Table = Source{[Item="Product",Kind="Table"]}[Data],
+				    #"Type modifié" = Table.TransformColumnTypes(Product_Table,{{"ProductKey", Int64.Type}, {"SKU", type text}, {"Product", type text}, {"Standard Cost", type number}, {"Color", type text}, {"List Price", type number}, {"Model", type text}, {"Subcategory", type text}, {"Category", type text}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
