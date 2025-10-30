@@ -1,7 +1,7 @@
 ﻿# Hardcoded paths
-$NewVersionFolderPath = "C:\Users\BQTR7546\.vscodeProject\nrt-powerbi\AdventureWorks2019 XLS après"
-$OldVersionFolderPath = "C:\Users\BQTR7546\.vscodeProject\nrt-powerbi\AdventureWorks2019 XLS"
-$BaseTargetFolder = "C:\Users\BQTR7546\.vscodeProject\nrt-powerbi"
+$NewVersionFolderPath = "C:\Users\BQTR7546\.vscodeProject\PowerBiCompare\AdventureWorks2019 XLS après"
+$OldVersionFolderPath = "C:\Users\BQTR7546\.vscodeProject\PowerBiCompare\AdventureWorks2019 XLS"
+$BaseTargetFolder = "C:\Users\BQTR7546\.vscodeProject\PowerBiCompare"
 $ReportOutputFolder = Join-Path $BaseTargetFolder "RapportHTML"
 
 # Create the output directory if it doesn't exist
