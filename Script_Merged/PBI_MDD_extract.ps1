@@ -1364,7 +1364,7 @@ function ReportCreateStringCompareTable {
     $comparisonResultTable = $comparisonResult[0]
 
     #Initialization of the table
-    $compareTable = "<table>`n"
+    $compareTable = "<table class=`"modal-table`">`n"
 
     #Table headers
     $compareTable += "<thead>"
@@ -1495,7 +1495,7 @@ function ReportCreateCompareTable {
 
     #Create the header of the table
     $reportHeader += "<th colspan=`"$($listOfProperties.Count)`" data-i18n-key=`"semantic.tables.headers.old_version`">semantic.tables.headers.old_version</th>"
-    $reportHeader += "<th></th>"
+    $reportHeader += "<th data-i18n-key=`"semantic.tables.headers.status`">semantic.tables.headers.status</th>"
     $reportHeader += "<th colspan=`"$($listOfProperties.Count)`" data-i18n-key=`"semantic.tables.headers.new_version`">semantic.tables.headers.old_version</th>"
     $reportHeader += "</tr>`n"
     # Column headers row using Orange style
@@ -1714,16 +1714,16 @@ function ReportCreateCompareTable {
 
             #Here the difference indicator
             if($diffType -eq "Different"){
-                $diffIndice = "<td><div class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--modified`" data-i18n-key=`"diffTypes.Modifie`">diffTypes.Modifie</span></div></td>"
+                $diffIndice = "<td  class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--modified`" data-i18n-key=`"diffTypes.Modifie`">diffTypes.Modifie</span></td>"
             }
             elseif($diffType -eq "Deleted"){
-                $diffIndice = "<td><div class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--removed`" data-i18n-key=`"diffTypes.Supprime`">diffTypes.Supprime</span></div></td>"
+                $diffIndice = "<td class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--removed`" data-i18n-key=`"diffTypes.Supprime`">diffTypes.Supprime</span></td>"
             }
             elseif($diffType -eq "Added"){
-                $diffIndice = "<td><div class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--added`" data-i18n-key=`"diffTypes.Ajoute`">diffTypes.Ajoute</span></div></td>"
+                $diffIndice = "<td class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--added`" data-i18n-key=`"diffTypes.Ajoute`">diffTypes.Ajoute</span></td>"
             }
             elseif ($diffType -eq "Identical"){
-                $diffIndice = "<td><div class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--neutral`" data-i18n-key=`"diffTypes.Identique`">diffTypes.Identique</span></div></td>"
+                $diffIndice = "<td class=`"diff-type-cell two-block-status`"><span class=`"diff-badge diff-badge--neutral`" data-i18n-key=`"diffTypes.Identique`">diffTypes.Identique</span></td>"
             }
             $reportLine += "$($diffIndice)"
 
@@ -2550,7 +2550,7 @@ tr:hover {
 
     #----Measures DAX----
     $objectsToShow = GetObjectToShow -comparisonResult $comparisonResult -objectToGet "Measure"
-    $columns_table_6 = ReportCreateCompareTable -listOfObjects $objectsToShow -objectsType 'Model.Tables.Measures' -tableName "table_measures" -listOfProperties @("name", "expression", "formatString", "isHidden", "displayFolder", "hangedProperties.property")
+    $columns_table_6 = ReportCreateCompareTable -listOfObjects $objectsToShow -objectsType 'Model.Tables.Measures' -tableName "table_measures" -listOfProperties @("name", "expression", "formatString", "isHidden", "displayFolder", "changedProperties.property")
 
     if($columns_table_6[0]) { $reportFinal += $columns_table_6[0] }
 

@@ -3137,7 +3137,7 @@ Function Get-VisualDisplayName {
                             $titleProp.expr.PSObject.Properties['Literal'] -and
                             $titleProp.expr.Literal.PSObject.Properties['Value']) {
                             $titleValue = $titleProp.expr.Literal.Value
-                            if ($titleValue -and $titleValue.ToString().Trim() -ne "") {
+                            if ($titleValue -and $titleValue.ToString().Trim() -ne "" -and $titleValue.ToString().Trim() -ne "''") {
                                 return $titleValue.ToString().Trim().Trim("'")
                             }
                         }
@@ -3161,10 +3161,65 @@ Function Get-VisualDisplayName {
                             $textProp.expr.PSObject.Properties['Literal'] -and
                             $textProp.expr.Literal.PSObject.Properties['Value']) {
                             $textValue = $textProp.expr.Literal.Value
-                            if ($textValue -and $textValue.ToString().Trim() -ne "") {
+                            if ($textValue -and $textValue.ToString().Trim() -ne "" -and $textValue.ToString().Trim() -ne "''") {
                                 return $textValue.ToString().Trim().Trim("'")
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        # Priority 3: Check visual.objects.header[].properties.text (for tableEx/matrix headers)
+        if ($visual.PSObject.Properties['visual'] -and
+            $visual.visual.PSObject.Properties['objects'] -and
+            $visual.visual.objects.PSObject.Properties['header']) {
+
+            $headerObjects = $visual.visual.objects.header
+            if ($headerObjects -is [Array]) {
+                foreach ($headerItem in $headerObjects) {
+                    if ($headerItem.PSObject.Properties['properties'] -and
+                        $headerItem.properties.PSObject.Properties['text']) {
+                        $textProp = $headerItem.properties.text
+                        if ($textProp.PSObject.Properties['expr'] -and
+                            $textProp.expr.PSObject.Properties['Literal'] -and
+                            $textProp.expr.Literal.PSObject.Properties['Value']) {
+                            $headerValue = $textProp.expr.Literal.Value
+                            if ($headerValue -and $headerValue.ToString().Trim() -ne "" -and $headerValue.ToString().Trim() -ne "''") {
+                                return $headerValue.ToString().Trim().Trim("'")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        # Priority 4: Extract from query bindings/projections (for tableEx/matrix with field names)
+        if ($visual.PSObject.Properties['query'] -and
+            $visual.query.PSObject.Properties['Select']) {
+            
+            $selectItems = $visual.query.Select
+            if ($selectItems -is [Array] -and $selectItems.Count -gt 0) {
+                # Try to extract meaningful field names
+                $fieldNames = @()
+                foreach ($item in $selectItems) {
+                    if ($item.PSObject.Properties['Name']) {
+                        $fieldName = $item.Name
+                        # Extract clean field name (remove technical prefixes)
+                        if ($fieldName -match '\.([^.]+)$') {
+                            $fieldNames += $matches[1]
+                        } else {
+                            $fieldNames += $fieldName
+                        }
+                    }
+                }
+                
+                if ($fieldNames.Count -gt 0) {
+                    # Use the first field name as the visual title
+                    $firstField = $fieldNames[0]
+                    if ($firstField -and $firstField.ToString().Trim() -ne "") {
+                        $visualType = if ($visual._extracted_type) { $visual._extracted_type } else { "visuel" }
+                        return "$visualType : $firstField"
                     }
                 }
             }
@@ -3200,13 +3255,20 @@ Function CompareVisualProperties {
         $visualDisplayName = Get-VisualDisplayName -visual $newVisual -visualName $visualName
         $visualType = if ($newVisual._extracted_type) { $newVisual._extracted_type } else { "unknown" }
 
-        # Format: "Matrix rating (pivotTable)" if has title, or "pivotTable (id)" if not
-        if ($visualDisplayName -notlike "*$visualName*") {
-            $visualDisplayInfo = "$visualDisplayName ($visualType)"
-        } else {
-            $visualDisplayInfo = $visualDisplayName
+        # Enrich display name with fields if available (like in ComparePageVisuals for added/removed visuals)
+        $fieldsText = ""
+        if ($newVisual._extracted_fields -and $newVisual._extracted_fields.Count -gt 0) {
+            $fieldsText = " [" + ($newVisual._extracted_fields -join ", ") + "]"
         }
 
+        # Format: "Matrix rating (pivotTable)" if has title, or "pivotTable (id)" if not
+        # If display name already contains the visual name (technical fallback), replace it with enriched version
+        if ($visualDisplayName -like "*($visualName)*") {
+            # Technical fallback - replace with type + fields
+            $visualDisplayName = "$visualType$fieldsText"
+        }
+
+        $visualDisplayInfo = $visualDisplayName
         $fullDisplayInfo = "$visualDisplayInfo sur page '$pageDisplayName'"
         
         # Enhanced visual filter comparison
